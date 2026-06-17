@@ -1,0 +1,40 @@
+services:
+  prefect-server:
+    image: prefecthq/prefect:2-python3.11
+    command: prefect server start --host 0.0.0.0
+    ports:
+      - "4200:4200"
+    environment:
+      PREFECT_SERVER_API_HOST: 0.0.0.0
+
+  pipeline:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    depends_on:
+      - prefect-server
+    working_dir: /app
+    volumes:
+      - ..:/app
+    environment:
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      DUCKDB_PATH: /app/oncology.duckdb
+      DBT_PROFILES_DIR: /app/dbt
+      PREFECT_API_URL: http://prefect-server:4200/api
+    command: bash -lc "sleep infinity"
+
+  streamlit:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    profiles: ["dashboard"]
+    depends_on:
+      - pipeline
+    working_dir: /app
+    volumes:
+      - ..:/app
+    ports:
+      - "8501:8501"
+    environment:
+      DUCKDB_PATH: /app/oncology.duckdb
+    command: streamlit run streamlit/app.py --server.address 0.0.0.0

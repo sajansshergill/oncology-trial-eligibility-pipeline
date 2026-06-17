@@ -27,7 +27,7 @@ def generate_patients(n: int = 1000):
 def seed_bronze():
     logger = get_run_logger()
     logger.info("Seeding DuckDB Bronze layer...")
-    from synthetic_data.seed_duckdb import main
+    from synthetic_data.seed_local import main
     main()
     logger.info("Bronze layer seeded successfully")
     return True

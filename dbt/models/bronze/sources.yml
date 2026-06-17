@@ -1,0 +1,12 @@
+version: 2
+
+sources:
+  - name: bronze
+    schema: bronze
+    tables:
+      - name: patients_raw
+      - name: diagnoses_raw
+      - name: labs_raw
+      - name: medications_raw
+      - name: biomarkers_raw
+      - name: trials_raw

@@ -14,7 +14,10 @@ from pathlib import Path
 from datetime import date, timedelta
 import random
 
-from oncology_codes import SAMPLE_TRIAL_CRITERIA
+try:
+    from synthetic_data.oncology_codes import SAMPLE_TRIAL_CRITERIA
+except ModuleNotFoundError:
+    from oncology_codes import SAMPLE_TRIAL_CRITERIA
 
 OUTPUT_DIR = Path(__file__).parent.parent / "data" / "raw"
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)

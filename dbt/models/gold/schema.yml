@@ -1,0 +1,33 @@
+version: 2
+
+models:
+  - name: fact_trial_matches
+    description: Patient-trial eligibility scores enriched with patient and trial attributes.
+    columns:
+      - name: match_id
+        tests:
+          - unique
+          - not_null
+      - name: patient_id
+        tests:
+          - not_null
+      - name: trial_id
+        tests:
+          - not_null
+      - name: match_score
+        tests:
+          - not_null
+      - name: is_fully_eligible
+        tests:
+          - not_null
+
+  - name: mart_cohort_summary
+    description: Trial-level cohort summary for Streamlit KPI cards and summary table.
+    columns:
+      - name: trial_id
+        tests:
+          - unique
+          - not_null
+      - name: patients_evaluated
+        tests:
+          - not_null

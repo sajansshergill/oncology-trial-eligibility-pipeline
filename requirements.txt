@@ -7,6 +7,7 @@ numpy>=1.26.0
 anthropic>=0.25.0
 prefect>=2.19.0
 streamlit>=1.33.0
+great_expectations>=0.18.0
 pytest>=8.0.0
 pytest-mock>=3.12.0
 python-dotenv>=1.0.0

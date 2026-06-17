@@ -9,7 +9,20 @@ from pathlib import Path
 import pandas as pd
 import numpy as np
 from faker import Faker
-from oncology_codes import ICD10_ONCOLOGY, LOINC_LABS, RXNORM_MEDICATIONS, BIOMARKER_PROFILES
+try:
+    from synthetic_data.oncology_codes import (
+        ICD10_ONCOLOGY,
+        LOINC_LABS,
+        RXNORM_MEDICATIONS,
+        BIOMARKER_PROFILES,
+    )
+except ModuleNotFoundError:
+    from oncology_codes import (
+        ICD10_ONCOLOGY,
+        LOINC_LABS,
+        RXNORM_MEDICATIONS,
+        BIOMARKER_PROFILES,
+    )
 
 fake = Faker()
 Faker.seed(42); random.seed(42); np.random.seed(42)
@@ -136,11 +149,6 @@ def generate_biomarkers(patients):
 
 def main(n):
     print(f"\n🧬 Generating synthetic oncology dataset — {n} patients\n")
-    datasets = {
-        "patients":    generate_patients(n),
-        "diagnoses":   generate_diagnoses(generate_patients(n) if False else (lambda p: p)(generate_patients(n) if False else pd.DataFrame())),
-    }
-    # Re-run properly
     patients    = generate_patients(n)
     diagnoses   = generate_diagnoses(patients)
     labs        = generate_labs(patients)

@@ -333,17 +333,18 @@ pip install -r requirements.txt
 #               anthropic, streamlit, faker, pandas, pyarrow
 ```
 
-### 3. Generate synthetic data
+### 3. Generate and seed synthetic data
 
 ```bash
 python synthetic_data/generate_patients.py --n 5000
-python synthetic_data/generate_trials.py --n 50
+python synthetic_data/generate_trials.py
+python synthetic_data/seed_local.py
 ```
 
 ### 4. Start Prefect (Docker)
 
 ```bash
-docker-compose up -d
+docker compose -f docker/docker-compose.yml up -d
 # Prefect UI at localhost:4200
 ```
 
@@ -351,12 +352,10 @@ docker-compose up -d
 
 ```bash
 cd dbt
-dbt deps
 dbt run --select bronze
 dbt test --select bronze
 dbt run --select silver
 dbt test --select silver
-dbt run --select gold
 ```
 
 ### 6. Run eligibility matching
@@ -364,6 +363,9 @@ dbt run --select gold
 ```bash
 python flows/run_eligibility_matching.py
 ```
+
+The matching flow writes engine output and then runs the dbt Gold models that
+produce `main_gold.fact_trial_matches` and `main_gold.mart_cohort_summary`.
 
 ### 7. Launch dashboard
 

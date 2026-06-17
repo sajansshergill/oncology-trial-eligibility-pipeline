@@ -1,0 +1,43 @@
+name: dbt CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      DUCKDB_PATH: oncology.duckdb
+      ANTHROPIC_API_KEY: test-key
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run unit tests
+        run: pytest tests -q
+
+      - name: Generate synthetic data
+        run: |
+          python synthetic_data/generate_patients.py --n 100
+          python synthetic_data/generate_trials.py
+          python synthetic_data/seed_local.py
+
+      - name: Run dbt bronze and silver
+        working-directory: dbt
+        run: |
+          dbt compile --profiles-dir .
+          dbt run --select bronze silver --profiles-dir .
+          dbt test --select bronze silver --profiles-dir .

@@ -1,0 +1,24 @@
+name: silver_promotion
+config_version: 1.0
+class_name: Checkpoint
+run_name_template: "silver-promotion-%Y%m%d-%H%M%S"
+validations:
+  - batch_request:
+      datasource_name: duckdb
+      data_asset_name: main_silver.dim_patients
+    expectation_suite_name: dim_patients
+  - batch_request:
+      datasource_name: duckdb
+      data_asset_name: main_silver.dim_diagnoses
+    expectation_suite_name: dim_diagnoses
+  - batch_request:
+      datasource_name: duckdb
+      data_asset_name: main_silver.dim_labs
+    expectation_suite_name: dim_labs
+action_list:
+  - name: store_validation_result
+    action:
+      class_name: StoreValidationResultAction
+  - name: update_data_docs
+    action:
+      class_name: UpdateDataDocsAction

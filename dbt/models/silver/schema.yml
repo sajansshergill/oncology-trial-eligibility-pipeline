@@ -1,0 +1,91 @@
+version: 2
+
+models:
+  - name: dim_patients
+    description: Patient demographics and index oncology diagnosis attributes.
+    columns:
+      - name: patient_id
+        tests:
+          - unique
+          - not_null
+      - name: age_at_diagnosis
+        tests:
+          - not_null
+      - name: ecog_status
+        tests:
+          - accepted_values:
+              arguments:
+                values: [0, 1, 2, 3, 4]
+      - name: gender
+        tests:
+          - accepted_values:
+              arguments:
+                values: ["M", "F"]
+
+  - name: dim_diagnoses
+    description: Normalized diagnosis records with ICD-10 codes.
+    columns:
+      - name: diagnosis_id
+        tests:
+          - unique
+          - not_null
+      - name: patient_id
+        tests:
+          - not_null
+      - name: icd10_code
+        tests:
+          - not_null
+
+  - name: dim_labs
+    description: Lab observations with latest-result ranking per patient and lab.
+    columns:
+      - name: lab_id
+        tests:
+          - unique
+          - not_null
+      - name: patient_id
+        tests:
+          - not_null
+      - name: recency_rank
+        tests:
+          - not_null
+
+  - name: dim_medications
+    description: Medication administrations with prior therapy flags used by eligibility criteria.
+    columns:
+      - name: medication_id
+        tests:
+          - unique
+          - not_null
+      - name: patient_id
+        tests:
+          - not_null
+      - name: rxnorm_code
+        tests:
+          - not_null
+
+  - name: dim_biomarkers
+    description: One synthetic biomarker profile per patient.
+    columns:
+      - name: biomarker_id
+        tests:
+          - unique
+          - not_null
+      - name: patient_id
+        tests:
+          - not_null
+
+  - name: dim_trials
+    description: Trial registry records and free-text criteria.
+    columns:
+      - name: trial_id
+        tests:
+          - unique
+          - not_null
+      - name: nct_id
+        tests:
+          - unique
+          - not_null
+      - name: criteria_text
+        tests:
+          - not_null
